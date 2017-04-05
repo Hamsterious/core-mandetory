@@ -5,6 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Twilio;
+using Twilio.Rest.Api.V2010.Account;
+using Twilio.Types;
 
 namespace NIEL.Services
 {
@@ -13,10 +16,13 @@ namespace NIEL.Services
     // For more details see this link https://go.microsoft.com/fwlink/?LinkID=532713
     public class AuthMessageSender : IEmailSender, ISmsSender
     {
-        public AuthMessageSender(IOptions<AuthMessageSenderOptions> optionsAccessor)
+
+        public AuthMessageSender(IOptions<AuthMessageSenderOptions> optionsAccessor, IOptions<SMSoptions> smsOption)
         {
             Options = optionsAccessor.Value;
+            smsOptions = smsOption.Value;
         }
+        public SMSoptions smsOptions { get; }
 
         public AuthMessageSenderOptions Options { get; } //set only via Secret Manager
         public Task SendEmailAsync(string email, string subject, string message)
@@ -43,6 +49,18 @@ namespace NIEL.Services
         public Task SendSmsAsync(string number, string message)
         {
             // Plug in your SMS service here to send a text message.
+            // Your Account SID from twilio.com/console
+            var accountSid = smsOptions.accountSid;
+            // Your Auth Token from twilio.com/console
+            var authToken = smsOptions.authToken;
+
+            TwilioClient.Init(accountSid, authToken);
+
+            var msg = MessageResource.Create(
+              to: new PhoneNumber(number),
+              from: new PhoneNumber("+1(201) 535-4846"),
+              body: message);
+
             return Task.FromResult(0);
         }
     }
