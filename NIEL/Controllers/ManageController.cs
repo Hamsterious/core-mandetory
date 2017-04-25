@@ -10,6 +10,9 @@ using Microsoft.Extensions.Options;
 using NIEL.Models;
 using NIEL.Models.ManageViewModels;
 using NIEL.Services;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using NIEL.Data;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace NIEL.Controllers
 {
@@ -22,6 +25,9 @@ namespace NIEL.Controllers
         private readonly IEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
+        private readonly RoleStore<IdentityRole> _roleStore;
+        private readonly ApplicationDbContext _dbContext;
+
 
         public ManageController(
           UserManager<ApplicationUser> userManager,
@@ -29,14 +35,17 @@ namespace NIEL.Controllers
           IOptions<IdentityCookieOptions> identityCookieOptions,
           IEmailSender emailSender,
           ISmsSender smsSender,
-          ILoggerFactory loggerFactory)
+          ILoggerFactory loggerFactory,
+          ApplicationDbContext dbContext)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _externalCookieScheme = identityCookieOptions.Value.ExternalCookieAuthenticationScheme;
             _emailSender = emailSender;
             _smsSender = smsSender;
+            _dbContext = dbContext;
             _logger = loggerFactory.CreateLogger<ManageController>();
+            _roleStore = new RoleStore<IdentityRole>(_dbContext);
         }
 
         //
@@ -373,6 +382,25 @@ namespace NIEL.Controllers
         public IActionResult UserIndex()
         {
             var viewModel = _userManager.Users.ToList();
+            return View(viewModel);
+        }
+
+        public IActionResult UserCreate()
+        {
+            var viewModel = new ApplicationUser();
+            return View(viewModel);
+        }
+
+        public IActionResult ManageUserRole(string id)
+        {
+            var user = _userManager.Users.FirstOrDefault(x => x.Id.Equals(id));
+            var roles = _roleStore.Roles.ToList();
+
+            var viewModel = new ManageRoleViewModel() {
+                User = user,
+                Roles = new SelectList(roles),
+            };
+
             return View(viewModel);
         }
     }

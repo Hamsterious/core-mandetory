@@ -14,6 +14,7 @@ using NIEL.Models;
 using NIEL.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Rewrite;
+using Microsoft.AspNetCore.Identity;
 
 namespace NIEL
 {
@@ -106,6 +107,11 @@ namespace NIEL
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+            using (var context = app.ApplicationServices.GetRequiredService<ApplicationDbContext>())
+            {
+                SeedData.Initialize(context);
+            }
         }
+       
     }
 }

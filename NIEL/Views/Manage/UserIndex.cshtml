@@ -2,11 +2,16 @@
 
 <h1>Users</h1>
 
+<div class="btn-group">
+    <a asp-action="Register" asp-controller="Account" class="btn btn-primary">Create new user</a>
+</div>
+
 <hr />
+
 
 @if(Model != null && Model.Any()){
     foreach (var user in Model)
     {
-        <p>@user.Email</p>
+        <p>@user.Email - <a asp-action="ManageUserRole" asp-route-id="@user.Id">Manage user role</a></p>
     }
 }
