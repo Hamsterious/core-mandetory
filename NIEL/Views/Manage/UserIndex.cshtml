@@ -1,0 +1,12 @@
+﻿@model List<ApplicationUser>
+
+<h1>Users</h1>
+
+<hr />
+
+@if(Model != null && Model.Any()){
+    foreach (var user in Model)
+    {
+        <p>@user.Email</p>
+    }
+}

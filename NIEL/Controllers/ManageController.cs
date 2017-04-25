@@ -369,5 +369,11 @@ namespace NIEL.Controllers
         }
 
         #endregion
+
+        public IActionResult UserIndex()
+        {
+            var viewModel = _userManager.Users.ToList();
+            return View(viewModel);
+        }
     }
 }
