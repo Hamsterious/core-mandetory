@@ -398,10 +398,22 @@ namespace NIEL.Controllers
 
             var viewModel = new ManageRoleViewModel() {
                 User = user,
-                Roles = new SelectList(roles),
+                Roles = new SelectList(roles, "Id", "Name")
             };
 
             return View(viewModel);
+        }
+
+        [HttpPost]
+        [ActionName("ManageUserRole")]
+        public IActionResult ManageUserRolePOST(string id, ManageRoleViewModel viewModel)
+        {
+            var user = _userManager.Users.FirstOrDefault(x => x.Id.Equals(id));
+            var role = _roleStore.Roles.FirstOrDefault(x => x.Id.Equals(viewModel.SelectedRoleId));
+
+            var result = _userManager.AddToRoleAsync(user, role.Name).Result;
+
+            return RedirectToAction("UserIndex");
         }
     }
 }

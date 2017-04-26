@@ -2,12 +2,12 @@
 
 <h2>Manage role for @Model.User.Email</h2>
 
-<form asp-action="Create">
+<form asp-action="ManageUserRole">
     <div class="form-horizontal">
         <div class="form-group">
-            <label asp-for="SelectedRole" class="col-md-2 control-label"></label>
+            <label asp-for="SelectedRoleId" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <select asp-for="SelectedRole" asp-items="@Model.Roles">
+                <select asp-for="SelectedRoleId" asp-items="@Model.Roles">
                     <option disabled selected>Please selected a role</option>
                 </select>
             </div>

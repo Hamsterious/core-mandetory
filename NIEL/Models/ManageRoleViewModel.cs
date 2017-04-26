@@ -11,6 +11,6 @@ namespace NIEL.Models
     {
         public ApplicationUser User { get; set; }
         public SelectList Roles { get; set; }
-        public IdentityRole SelectedRole { get; set; }
+        public string SelectedRoleId { get; set; }
     }
 }
