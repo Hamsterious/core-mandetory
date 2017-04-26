@@ -405,8 +405,7 @@ namespace NIEL.Controllers
         }
 
         [HttpPost]
-        [ActionName("ManageUserRole")]
-        public IActionResult ManageUserRolePOST(string id, ManageRoleViewModel viewModel)
+        public IActionResult ManageUserRole(string id, ManageRoleViewModel viewModel)
         {
             var user = _userManager.Users.FirstOrDefault(x => x.Id.Equals(id));
             var role = _roleStore.Roles.FirstOrDefault(x => x.Id.Equals(viewModel.SelectedRoleId));

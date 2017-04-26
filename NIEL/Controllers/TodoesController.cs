@@ -7,25 +7,25 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NIEL.Data;
 using NIEL.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace NIEL.Controllers
 {
-    public class TodoesController : Controller
+        [Authorize]
+        public class TodoesController : Controller
     {
         private readonly ApplicationDbContext _context;
 
         public TodoesController(ApplicationDbContext context)
         {
-            _context = context;    
+            _context = context;  
         }
 
-        // GET: Todoes
         public async Task<IActionResult> Index()
         {
             return View(await _context.Todo.ToListAsync());
         }
 
-        // GET: Todoes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -43,17 +43,15 @@ namespace NIEL.Controllers
             return View(todo);
         }
 
-        // GET: Todoes/Create
+        [Authorize(Roles = "Organizer,Team Player")]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Todoes/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Organizer,Team Player")]
         public async Task<IActionResult> Create([Bind("Id,Title,Details,Done")] Todo todo)
         {
             if (ModelState.IsValid)
@@ -65,7 +63,7 @@ namespace NIEL.Controllers
             return View(todo);
         }
 
-        // GET: Todoes/Edit/5
+        [Authorize(Roles = "Organizer,Team Player,Contributor")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -81,11 +79,9 @@ namespace NIEL.Controllers
             return View(todo);
         }
 
-        // POST: Todoes/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Organizer,Team Player,Contributor")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Details,Done")] Todo todo)
         {
             if (id != todo.Id)
@@ -116,7 +112,7 @@ namespace NIEL.Controllers
             return View(todo);
         }
 
-        // GET: Todoes/Delete/5
+        [Authorize(Roles = "Team Player,Contributor")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -134,9 +130,9 @@ namespace NIEL.Controllers
             return View(todo);
         }
 
-        // POST: Todoes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Team Player,Contributor")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var todo = await _context.Todo.SingleOrDefaultAsync(m => m.Id == id);
